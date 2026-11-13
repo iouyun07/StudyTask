@@ -22,14 +22,16 @@ import tasks
 def create_app(test_config: dict | None = None) -> Flask:
     """应用工厂；测试时可传入 test_config 覆盖数据库路径等配置。"""
     app = Flask(__name__, instance_relative_config=True)
+    # 数据库路径固定相对于本文件所在目录，避免受启动时工作目录影响
+    base_dir = Path(__file__).resolve().parent
     app.config.from_mapping(
         SECRET_KEY="dev-secret-key-change-me",
-        DATABASE=str(Path(app.instance_path) / "studytask.db"),
+        DATABASE=str(base_dir / "instance" / "studytask.db"),
     )
     if test_config:
         app.config.update(test_config)
 
-    Path(app.instance_path).mkdir(parents=True, exist_ok=True)
+    Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
     db.init_app(app)
     _ensure_database(app)
 

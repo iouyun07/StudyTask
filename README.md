@@ -2,7 +2,7 @@
 
 单用户、本地运行的 Web 学习任务管理应用。后端 Python + Flask + SQLite，前端为服务端渲染的 HTML 页面，不需要联网、不需要登录。
 
-> 状态：实验一开发中。本文件在交付前会补全“测试记录”和“已知限制”的最终结论。
+> 状态：实验一功能已完成，自动化测试覆盖 T1–T10（15 条用例全部通过，见「测试记录」）。
 
 ## 功能
 
@@ -66,6 +66,28 @@ python app.py
 
 测试使用独立的临时数据库，不会影响 `instance/studytask.db` 中的真实数据。
 
+## 测试记录
+
+- 执行日期：2026-11-13
+- 执行环境：Windows 11 / Python 3.13.6 / pytest 9.2.0
+- 执行命令：`.venv\Scripts\python.exe -m pytest -v`
+- 结果：**15 passed**（0 失败）
+
+| 用例 | 测试内容 | 对应测试函数 | 结果 |
+|---|---|---|---|
+| T1 | 新建任务（课程「数据结构」、次日截止、高优先级），列表显示新增任务 | `test_t1_create_task_shows_in_list` | 通过 |
+| T2 | 名称为空提交，提示错误且不产生脏数据 | `test_t2_empty_name_rejected_without_dirty_data` | 通过 |
+| T3 | 修改描述与优先级，刷新后保留 | `test_t3_edit_description_and_priority_persists` | 通过 |
+| T4 | 待完成 → 进行中 → 已完成，状态逐次正确更新 | `test_t4_status_transitions`、`test_t4_status_rejects_unknown_value` | 通过 |
+| T5 | 按课程、状态、优先级筛选（含组合筛选），结果只含匹配任务 | `test_t5_filter_by_course_status_priority` | 通过 |
+| T6 | 昨日到期且未完成，显示「逾期」标识；已完成的旧任务不显示 | `test_t6_overdue_badge`、`test_t6_completed_task_has_no_overdue_badge` | 通过 |
+| T7 | 明日到期且未完成，显示「即将到期」标识 | `test_t7_due_soon_badge` | 通过 |
+| T8 | 创建 5 项、完成 2 项，总数 5、完成数 2、完成率 40% | `test_t8_stats_total_done_rate`、`test_stats_zero_when_empty` | 通过 |
+| T9 | 打开删除确认页不删除，确认后才删除 | `test_t9_delete_keeps_data_until_confirmed` | 通过 |
+| T10 | 关闭并重新启动系统，已保存数据仍可查询 | `test_t10_data_survives_restart` | 通过 |
+
+补充用例：非法日期被拒绝（`test_invalid_due_date_rejected`）、不存在的任务返回 404（`test_missing_task_returns_404`）。
+
 ## 项目结构
 
 ```
@@ -77,6 +99,7 @@ StudyTask/
 ├─ templates/          # 页面模板（Jinja2）
 ├─ static/             # 样式文件
 ├─ tests/              # 自动化测试
+├─ pytest.ini          # pytest 配置
 ├─ requirements.txt    # 依赖清单
 ├─ README.md
 └─ AI_DEV_LOG.md       # AI 辅助开发记录
