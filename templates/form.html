@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} - StudyTask{% endblock %}
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<form class="task-form" method="post" action="{{ action }}" novalidate>
+  <div class="field{% if errors['name'] %} has-error{% endif %}">
+    <label for="name">任务名称 <span class="req">*</span></label>
+    <input id="name" name="name" type="text" maxlength="100" value="{{ data['name'] }}">
+    {% if errors['name'] %}<p class="error">{{ errors['name'] }}</p>{% endif %}
+  </div>
+
+  <div class="field{% if errors['course'] %} has-error{% endif %}">
+    <label for="course">所属课程 <span class="req">*</span></label>
+    <input id="course" name="course" type="text" maxlength="60" value="{{ data['course'] }}">
+    {% if errors['course'] %}<p class="error">{{ errors['course'] }}</p>{% endif %}
+  </div>
+
+  <div class="field{% if errors['description'] %} has-error{% endif %}">
+    <label for="description">任务描述</label>
+    <textarea id="description" name="description" rows="4" maxlength="1000">{{ data['description'] }}</textarea>
+    {% if errors['description'] %}<p class="error">{{ errors['description'] }}</p>{% endif %}
+  </div>
+
+  <div class="field{% if errors['due_date'] %} has-error{% endif %}">
+    <label for="due_date">截止日期 <span class="req">*</span></label>
+    <input id="due_date" name="due_date" type="date" value="{{ data['due_date'] }}">
+    {% if errors['due_date'] %}<p class="error">{{ errors['due_date'] }}</p>{% endif %}
+  </div>
+
+  <div class="field{% if errors['priority'] %} has-error{% endif %}">
+    <label for="priority">优先级</label>
+    <select id="priority" name="priority">
+      {% for p in priorities %}
+      <option value="{{ p }}"{% if data['priority'] == p %} selected{% endif %}>{{ p }}</option>
+      {% endfor %}
+    </select>
+    {% if errors['priority'] %}<p class="error">{{ errors['priority'] }}</p>{% endif %}
+  </div>
+
+  <div class="field{% if errors['status'] %} has-error{% endif %}">
+    <label for="status">状态</label>
+    <select id="status" name="status">
+      {% for s in statuses %}
+      <option value="{{ s }}"{% if data['status'] == s %} selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    {% if errors['status'] %}<p class="error">{{ errors['status'] }}</p>{% endif %}
+  </div>
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">保存</button>
+    <a class="btn btn-link" href="{{ url_for('index') }}">取消</a>
+  </div>
+</form>
+
+{% endblock %}
