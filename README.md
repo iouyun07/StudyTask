@@ -4,6 +4,36 @@
 
 > 状态：实验一功能已完成，自动化测试覆盖 T1–T10（15 条用例全部通过，见「测试记录」）。
 
+## 在线访问
+
+- 演示地址：<https://iouyun07.pythonanywhere.com>
+- 代码仓库：<https://github.com/iouyun07/StudyTask>
+- 部署方式：PythonAnywhere 免费版（Manual configuration + WSGI + virtualenv），代码从 GitHub 仓库克隆；
+- 线上与本地是同一套代码；线上数据保存在服务器 `~/StudyTask/instance/studytask.db`，服务重启不丢失，与本地数据库互相独立。
+
+### 部署说明（PythonAnywhere）
+
+1. Bash 控制台执行：`git clone https://github.com/iouyun07/StudyTask.git` 并 `cd StudyTask`；
+2. 创建并激活虚拟环境：`mkvirtualenv --python=/usr/bin/python3.13 studytask`；
+3. 安装依赖：`pip install -r requirements.txt`；
+4. Web 标签 → Add a new web app → **Manual configuration** → Python 3.13；
+   - Source code / Working directory：`/home/iouyun07/StudyTask`
+   - Virtualenv：`/home/iouyun07/.virtualenvs/studytask`
+5. 编辑 WSGI 配置文件（`/var/www/iouyun07_pythonanywhere_com_wsgi.py`）：
+
+   ```python
+   import sys
+
+   path = "/home/iouyun07/StudyTask"
+   if path not in sys.path:
+       sys.path.insert(0, path)
+
+   from app import app as application
+   ```
+
+6. Static files：URL `/static/` → Directory `/home/iouyun07/StudyTask/static`；
+7. 点 Reload，访问演示地址。
+
 ## 功能
 
 | 编号 | 功能 |
@@ -72,6 +102,7 @@ python app.py
 - 执行环境：Windows 11 / Python 3.13.6 / pytest 9.2.0
 - 执行命令：`.venv\Scripts\python.exe -m pytest -v`
 - 结果：**15 passed**（0 失败）
+- 线上复跑（PythonAnywhere，2026-11-14，Python 3.13.1 / pytest 9.2.0）：`python -m pytest -q` → **15 passed in 3.91s**
 
 | 用例 | 测试内容 | 对应测试函数 | 结果 |
 |---|---|---|---|

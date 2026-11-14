@@ -78,3 +78,27 @@
 - `.venv\Scripts\python.exe -m pytest -v` → **15 passed in 0.60s**；
 - 真实 HTTP 验证（`python app.py` 后访问 `http://127.0.0.1:5000`）：首页 200、新建任务 302 跳转后列表可见、任务详情 200、不存在的任务 404；
 - T10 真实重启验证：停止服务再启动，已保存任务仍可查询；测试数据已清理，数据库恢复为空。
+
+---
+
+## 2026-11-14 远程仓库与线上部署
+
+**提示词（摘要）**：实验要求把项目部署到服务器；先用免费 PaaS 试水，询问具体操作。
+
+**关键决定**
+- 源码托管选 GitHub：PythonAnywhere 免费账号的对外访问有白名单，包含 GitHub 而不含 Gitee，服务器 `git clone` 只能走 GitHub；
+- 平台选 PythonAnywhere 免费版：磁盘持久，SQLite 数据在线上不会因重启丢失，T10 在线上同样成立；Render 免费实例磁盘临时，会清空数据，仅作备选；
+- 线上用 Manual configuration 配置（不选 Flask 模板，避免模板生成的文件覆盖现有结构）。
+
+**过程**
+- 本地 5 次提交推送到 <https://github.com/iouyun07/StudyTask>（main 分支）；
+- 服务器 clone 后执行 `mkvirtualenv --python=/usr/bin/python3.13 studytask`，再 `pip install -r requirements.txt`（安装 12 个包）；
+- WSGI 文件写入 `sys.path.insert(0, "/home/iouyun07/StudyTask")` 与 `from app import app as application`；
+- Static files 映射：`/static/` → `/home/iouyun07/StudyTask/static`。
+
+**验证**
+- 服务器端 `python -m pytest -q` → **15 passed in 3.91s**；
+- 线上站点 <https://iouyun07.pythonanywhere.com> 返回 200，首页统计（3 项 / 1 项已完成 / 33%）、逾期与「即将到期」标识显示正常；
+- 用户人工走查确认可用。
+
+**人工判断**：账号注册与服务器命令均由用户本人执行，AI 不接触账号密码与凭据。
