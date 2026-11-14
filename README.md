@@ -133,7 +133,10 @@ StudyTask/
 ├─ pytest.ini          # pytest 配置
 ├─ requirements.txt    # 依赖清单
 ├─ README.md
-└─ AI_DEV_LOG.md       # AI 辅助开发记录
+├─ AI_DEV_LOG.md       # AI 辅助开发记录
+└─ docs/               # 交付文档
+   ├─ 需求验收表.md / .docx
+   └─ 实验报告.md / .docx
 ```
 
 ## 数据存储
